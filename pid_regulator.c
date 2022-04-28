@@ -16,7 +16,8 @@
 #define	KP				500.0f
 #define	KI				1.0f
 #define MAX_SUM_ERROR 	(MOTOR_SPEED_LIMIT/KI)
-#define	ERROR_THRESHOLD	1.0f
+#define MIN_ERROR		1.0f
+#define	ERROR_THRESHOLD	0.1f
 
 // The PID regulator thread
 static THD_WORKING_AREA(waPIDRegulator, 256); //Value of the stack has to be defined later on.
@@ -30,6 +31,7 @@ static THD_FUNCTION(PIDRegulator, arg) {
     uint8_t 	goal = 0;
     float error = 0;
     float correction_speed = 0;
+    float straight_speed = 0;
 	float sum_error = 0;
 
     while(1){
@@ -55,17 +57,24 @@ static THD_FUNCTION(PIDRegulator, arg) {
 
 		correction_speed = KP * error + KI * sum_error;
 
+		//we set a minimum for the error to know when to start rolling forwards and backwards
+		if((error < MIN_ERROR) | (error > -MIN_ERROR)) {
+			straight_speed = MOTOR_SPEED_LIMIT/KI;
+		}else{
+			straight_speed = 0;
+		}
+
 		// Speed to the motor by cases
 		if( (get_acc_case() == 0) | (get_acc_case() == 2) ) {
 			// Case 0 and II
 			// Front on top
-			right_motor_set_speed((int16_t)-correction_speed);
-			left_motor_set_speed((int16_t)correction_speed);
+			right_motor_set_speed((int16_t)(straight_speed-correction_speed));
+			left_motor_set_speed((int16_t)(straight_speed+correction_speed));
 		}else {
 			// Case I and III
 			// Back on top
-			right_motor_set_speed((int16_t)correction_speed);
-			left_motor_set_speed((int16_t)-correction_speed);
+			right_motor_set_speed((int16_t)(-straight_speed+correction_speed));
+			left_motor_set_speed((int16_t)(-straight_speed-correction_speed));
 		}
 
 
