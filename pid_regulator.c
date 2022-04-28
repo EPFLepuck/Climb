@@ -17,6 +17,7 @@
 #define	KP				650.0f
 #define	KI				2.0f
 #define MAX_SUM_ERROR 	(MOTOR_SPEED_LIMIT/KI)
+#define	ERROR_THRESHOLD	0.1f
 #define MIN_ERROR		1.0f
 #define GOAL			0
 
@@ -60,13 +61,14 @@ static THD_FUNCTION(PIDRegulator, arg) {
 
 		//we set a minimum for the error to know when to start rolling forwards and backwards
 		if((error < MIN_ERROR) | (error > -MIN_ERROR)) {
-			straight_speed = MOTOR_SPEED_LIMIT/KI;
+			// 80 percent of max speed
+			straight_speed = MOTOR_SPEED_LIMIT*0.8;
 		}else{
 			straight_speed = 0;
 		}
 
 		// Speed to the motor by cases
-		if( (get_acc_case() == 0) | (get_acc_case() == 2) & (get_selector() != 0) ) {
+		if( ((get_acc_case() == 0) | (get_acc_case() == 2)) & (get_selector() != 0) ) {
 			// Case 0 and II
 			// Front on top
 			right_motor_set_speed((int16_t)(straight_speed-correction_speed));
