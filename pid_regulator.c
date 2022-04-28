@@ -11,12 +11,15 @@
 #include "compute_case.h"
 #include "pid_regulator.h"
 #include <motors.h>
+#include <selector.h>
 
 
-#define	KP				500.0f
-#define	KI				1.0f
+#define	KP				650.0f
+#define	KI				2.0f
 #define MAX_SUM_ERROR 	(MOTOR_SPEED_LIMIT/KI)
-#define	ERROR_THRESHOLD	1.0f
+#define	ERROR_THRESHOLD	0.1f
+#define SPEED			600
+#define GOAL			0
 
 // The PID regulator thread
 static THD_WORKING_AREA(waPIDRegulator, 256); //Value of the stack has to be defined later on.
@@ -27,7 +30,7 @@ static THD_FUNCTION(PIDRegulator, arg) {
 
     systime_t time;
 
-    uint8_t 	goal = 0;
+    //uint8_t  up_down = 0;
     float error = 0;
     float correction_speed = 0;
 	float sum_error = 0;
@@ -37,7 +40,7 @@ static THD_FUNCTION(PIDRegulator, arg) {
 
 		//----------PID regulator----------
 
-		error = get_acc_x() - goal;
+		error = get_acc_x() - GOAL;
 
 		if(fabs(error) <= ERROR_THRESHOLD){
 			error = 0;
@@ -55,17 +58,23 @@ static THD_FUNCTION(PIDRegulator, arg) {
 
 		correction_speed = KP * error + KI * sum_error;
 
-		// Speed to the motor by cases
-		if( (get_acc_case() == 0) | (get_acc_case() == 2) ) {
+		// Selector is just for the robot stops all movement
+		// Speed to the motor by cases for rotation
+		if( ((get_acc_case() == 0) | (get_acc_case() == 2)) & (get_selector() != 0) ) {
 			// Case 0 and II
 			// Front on top
-			right_motor_set_speed((int16_t)-correction_speed);
-			left_motor_set_speed((int16_t)correction_speed);
-		}else {
+			//up_down = 0;
+			right_motor_set_speed((int16_t)(-correction_speed));
+			left_motor_set_speed((int16_t)(correction_speed));
+		}else if( get_selector() != 0 ) {
 			// Case I and III
 			// Back on top
-			right_motor_set_speed((int16_t)correction_speed);
-			left_motor_set_speed((int16_t)-correction_speed);
+			//up_down = 1;
+			right_motor_set_speed((int16_t)(correction_speed));
+			left_motor_set_speed((int16_t)(-correction_speed));
+		}else{
+			right_motor_set_speed(0);
+			left_motor_set_speed(0);
 		}
 
 

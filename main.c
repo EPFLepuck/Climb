@@ -69,8 +69,9 @@ int main(void)
     /* Infinite loop. */
     while (1) {
     	palTogglePad(GPIOD, GPIOD_LED_FRONT);
-    	chprintf((BaseSequentialStream *)&SD3, "X = %f \n",get_acc_x());
+    	chprintf((BaseSequentialStream *)&SD3, "Error = %f \n",get_acc_x());
     	chprintf((BaseSequentialStream *)&SD3, "Case = %d \n",get_acc_case());
+
     	chThdSleepMilliseconds(1000);
     }
 }
