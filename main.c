@@ -2,20 +2,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "ch.h"
-#include "hal.h"
-#include "memory_protection.h"
+#include <ch.h>
+#include <hal.h>
+#include <memory_protection.h>
 #include <usbcfg.h>
 #include <main.h>
 #include <chprintf.h>
 #include <motors.h>
 #include <arm_math.h>
-#include "sensors/imu.h"
+#include <sensors/imu.h>
+#include <sensors/proximity.h>
 
 // project files includes
 #include "compute_case.h"
 #include "pid_regulator.h"
+#include "check_collision.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -38,7 +39,7 @@ int main(void)
 	// System init
     halInit();
     chSysInit();
-    //mpu_init();
+    mpu_init();
 
     /** Inits the Inter Process Communication bus. */
     messagebus_init(&bus, &bus_lock, &bus_condvar);
@@ -48,29 +49,39 @@ int main(void)
 
     // Start the imu
     imu_start();
-    //inits the motors
+    // Inits the motors
     motors_init();
-    //starts the serial communication
+    // Starts the serial communication
     serial_start();
+    // Starts the IR proximity sensor
+    proximity_start();
     //starts the USB communication
     //usb_start();
 
 
 
    messagebus_find_topic_blocking(&bus, "/imu");
+   // Callibration
+   calibrate_acc();
+   calibrate_ir();
 
     // Wait callibration
     chThdSleepMilliseconds(2000);
 
     // Start thread
+    check_collision_start();
     select_case_start();
     pid_regulator_start();
 
     /* Infinite loop. */
     while (1) {
     	palTogglePad(GPIOD, GPIOD_LED_FRONT);
-    	chprintf((BaseSequentialStream *)&SD3, "Error = %f \n",get_acc_x());
+    	chprintf((BaseSequentialStream *)&SD3, "AccX = %f \n",get_acc_x());
     	chprintf((BaseSequentialStream *)&SD3, "Case = %d \n",get_acc_case());
+    	//chprintf((BaseSequentialStream *)&SD3, "IR2 = %d \n",get_calibrated_prox(1));
+    	//chprintf((BaseSequentialStream *)&SD3, "IR1 = %d \n",get_calibrated_prox(0));
+    	//chprintf((BaseSequentialStream *)&SD3, "IR7 = %d \n",get_calibrated_prox(6));
+    	//chprintf((BaseSequentialStream *)&SD3, "IR8 = %d \n",get_calibrated_prox(7));
 
     	chThdSleepMilliseconds(1000);
     }
