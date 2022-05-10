@@ -61,8 +61,6 @@ int main(void)
     // Starts the USB communication
     //usb_start();
 
-
-
    messagebus_find_topic_blocking(&bus, "/imu");
    // Callibration
    calibrate_acc();
