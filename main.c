@@ -43,9 +43,6 @@ int main(void)
     /** Inits the Inter Process Communication bus. */
     messagebus_init(&bus, &bus_lock, &bus_condvar);
 
-
-
-
     // Start the imu
     imu_start();
     //inits the motors
@@ -55,12 +52,6 @@ int main(void)
     //starts the USB communication
     //usb_start();
 
-
-
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
    messagebus_find_topic_blocking(&bus, "/imu");
 
     // Wait callibration
@@ -72,14 +63,7 @@ int main(void)
 
     /* Infinite loop. */
     while (1) {
-<<<<<<< Updated upstream
-    	palTogglePad(GPIOD, GPIOD_LED_FRONT);
-    	chprintf((BaseSequentialStream *)&SD3, "Error = %f \n",get_acc_x());
-    	chprintf((BaseSequentialStream *)&SD3, "Case = %d \n",get_acc_case());
-
-=======
     	//test
->>>>>>> Stashed changes
     	chThdSleepMilliseconds(1000);
     }
 }
