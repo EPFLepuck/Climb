@@ -17,17 +17,18 @@
 #define		GRAVITY		9.80665f
 
 static float acc_x = 0;
+static float acc_z = 0;
 static uint8_t 	acc_case = 0;
 
-// Thread that tells us in which case (0, I, II, III, IV) (spqr) we are
+// Thread that tells us in which case (0, I, II, III, IV) (SPQR) we are
 static THD_WORKING_AREA(waSelectCase, 128); //Value of the stack has to be defined later on.
 static THD_FUNCTION(SelectCase, arg) {
 
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
+
     float acc_y = 0;
-    float acc_z = 0;
 
     while(1){
     	// get x and y component accelerometer

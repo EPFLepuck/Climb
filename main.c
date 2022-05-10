@@ -6,20 +6,24 @@
 #include <hal.h>
 #include <memory_protection.h>
 #include <usbcfg.h>
-#include <main.h>
 #include <chprintf.h>
 #include <motors.h>
 #include <arm_math.h>
 #include <sensors/imu.h>
 #include <sensors/proximity.h>
+#include <leds.h>
+#include <spi_comm.h>
+#include <msgbus/messagebus.h>
+#include <i2c_bus.h>
 
 // project files includes
+#include "main.h"
 #include "compute_case.h"
-#include "pid_regulator.h"
 #include "check_collision.h"
+#include "motor_speed.h"
 
 messagebus_t bus;
-MUTEX_DECL(bus_lock);
+MUTEX_DECL(bus_lock); // @suppress("Field cannot be resolved")
 CONDVAR_DECL(bus_condvar);
 
 static void serial_start(void)
@@ -44,10 +48,7 @@ int main(void)
     /** Inits the Inter Process Communication bus. */
     messagebus_init(&bus, &bus_lock, &bus_condvar);
 
-
-
-
-    // Start the imu
+    // Starts the imu
     imu_start();
     // Inits the motors
     motors_init();
@@ -55,7 +56,9 @@ int main(void)
     serial_start();
     // Starts the IR proximity sensor
     proximity_start();
-    //starts the USB communication
+    // Starts the SPI for the RGB LED
+    spi_comm_start();
+    // Starts the USB communication
     //usb_start();
 
 
@@ -71,13 +74,19 @@ int main(void)
     // Start thread
     check_collision_start();
     select_case_start();
-    pid_regulator_start();
+    motor_speed_start();
 
+    // LED indicates that the callibration is completed
+    for(uint8_t i = 0 ; i < 3; ++i){
+    	set_front_led(1);
+    	chThdSleepMilliseconds(100);
+    	set_front_led(0);
+    	chThdSleepMilliseconds(100);
+    }
     /* Infinite loop. */
     while (1) {
-    	palTogglePad(GPIOD, GPIOD_LED_FRONT);
-    	chprintf((BaseSequentialStream *)&SD3, "AccX = %f \n",get_acc_x());
-    	chprintf((BaseSequentialStream *)&SD3, "Case = %d \n",get_acc_case());
+    	//chprintf((BaseSequentialStream *)&SD3, "AccX = %f \n",get_acc_x());
+    	//chprintf((BaseSequentialStream *)&SD3, "Case = %d \n",get_acc_case());
     	//chprintf((BaseSequentialStream *)&SD3, "IR2 = %d \n",get_calibrated_prox(1));
     	//chprintf((BaseSequentialStream *)&SD3, "IR1 = %d \n",get_calibrated_prox(0));
     	//chprintf((BaseSequentialStream *)&SD3, "IR7 = %d \n",get_calibrated_prox(6));
