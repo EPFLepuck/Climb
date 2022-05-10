@@ -11,6 +11,8 @@
 #include <chprintf.h>
 #include <motors.h>
 #include <leds.h>
+#include <selector.h>
+#include <audio/audio_thread.h>
 #include "check_collision.h"
 
 #define DETECTION_THRESHOLD	100
@@ -43,12 +45,17 @@ static THD_FUNCTION(CheckCollision, arg) {
     		if(proxi_values[i] < DETECTION_THRESHOLD){
     			if(check_sensors == 7){
     				wall_detection = 0;
+
     				set_led(LED1, 0);
 					set_rgb_led(LED2, 0, 0, 0);
 					set_rgb_led(LED8, 0, 0, 0);
 					//set_led(LED5, 0);
 					set_rgb_led(LED4, 0, 0, 0);
 					set_rgb_led(LED6, 0, 0, 0);
+
+    				//Stop sound
+    				dac_stop();
+
     				check_sensors = 0;
     			}else{
         			check_sensors += 1;
@@ -62,11 +69,19 @@ static THD_FUNCTION(CheckCollision, arg) {
 
 					// Set front LEDs and clear back LEDs
     				wall_detection = 1;
+
 					set_rgb_led(LED4, 0, 0, 0);
 					set_rgb_led(LED6, 0, 0, 0);
 					set_led(LED1, 1);
 					set_rgb_led(LED2, 255, 255, 255);
 					set_rgb_led(LED8, 255, 255, 255);
+
+					//Front wall sound
+					if(get_selector() == 0){
+						dac_stop();
+					}else{
+						dac_play(1500);
+					}
 
 				//Front and back detected
     			}else{
@@ -77,6 +92,9 @@ static THD_FUNCTION(CheckCollision, arg) {
 					set_led(LED5, 1);
 					set_rgb_led(LED4, 255, 255, 255);
 					set_rgb_led(LED6, 255, 255, 255);
+
+					//Stop sound
+					dac_stop();
     			}
 
 			}else if( (i == 3) | (i == 4) ){
@@ -88,12 +106,20 @@ static THD_FUNCTION(CheckCollision, arg) {
 
 					// Set back LEDs and clear front LEDs
 					wall_detection = 2;
+
 					set_led(LED1, 0);
 					set_rgb_led(LED2, 0, 0, 0);
 					set_rgb_led(LED8, 0, 0, 0);
 					set_led(LED5, 1);
 					set_rgb_led(LED4, 255, 255, 255);
 					set_rgb_led(LED6, 255, 255, 255);
+
+					//Back wall sound
+					if(get_selector() == 0){
+						dac_stop();
+					}else{
+						dac_play(1000);
+					}
 				}
 			//Only side detection
     		}else if( (proxi_values[3] < DETECTION_THRESHOLD)
@@ -103,11 +129,15 @@ static THD_FUNCTION(CheckCollision, arg) {
 				  & (proxi_values[6] < DETECTION_THRESHOLD)
 				  & (proxi_values[7] < DETECTION_THRESHOLD) ){
 					wall_detection = 0;
+
 					set_rgb_led(LED4, 0, 0, 0);
 					set_rgb_led(LED6, 0, 0, 0);
 					set_led(LED1, 0);
 					set_rgb_led(LED2, 0, 0, 0);
 					set_rgb_led(LED8, 0, 0, 0);
+
+					//Stop sound
+					dac_stop();
     		}
     	}
     	// Check each 50ms if there is a wall or not
