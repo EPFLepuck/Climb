@@ -43,33 +43,73 @@ static THD_FUNCTION(CheckCollision, arg) {
     		if(proxi_values[i] < DETECTION_THRESHOLD){
     			if(check_sensors == 7){
     				wall_detection = 0;
-    				clear_leds();
+    				set_led(LED1, 0);
+					set_rgb_led(LED2, 0, 0, 0);
+					set_rgb_led(LED8, 0, 0, 0);
+					//set_led(LED5, 0);
+					set_rgb_led(LED4, 0, 0, 0);
+					set_rgb_led(LED6, 0, 0, 0);
     				check_sensors = 0;
     			}else{
         			check_sensors += 1;
     			}
+
     		// Walls detection
     		}else if( (i == 0) | (i == 1) | (i == 6) | (i == 7) ){
-    			wall_detection = 1;
-    			//Toggle LED
-    			clear_leds();
-    			set_led(LED1, 1);
-    			set_rgb_led(LED2, 255, 255, 255);
-    			set_rgb_led(LED8, 255, 255, 255);
-    		}else if( (i == 3) | (i == 4) ){
-    			wall_detection = 2;
+    			//Only front detected
+    			if( (proxi_values[3] < DETECTION_THRESHOLD)
+				  & (proxi_values[4] < DETECTION_THRESHOLD) ){
 
-				// Toggle LED
-				clear_leds();
-				set_led(LED5, 1);
-				set_rgb_led(LED4, 255, 255, 255);
-				set_rgb_led(LED6, 255, 255, 255);
-    		}else{
-				wall_detection = 0;
-				clear_leds();
-			}
+					// Set front LEDs and clear back LEDs
+    				wall_detection = 1;
+					set_rgb_led(LED4, 0, 0, 0);
+					set_rgb_led(LED6, 0, 0, 0);
+					set_led(LED1, 1);
+					set_rgb_led(LED2, 255, 255, 255);
+					set_rgb_led(LED8, 255, 255, 255);
+
+				//Front and back detected
+    			}else{
+    				// Set front LEDs
+    				set_led(LED1, 1);
+					set_rgb_led(LED2, 255, 255, 255);
+					set_rgb_led(LED8, 255, 255, 255);
+					set_led(LED5, 1);
+					set_rgb_led(LED4, 255, 255, 255);
+					set_rgb_led(LED6, 255, 255, 255);
+    			}
+
+			}else if( (i == 3) | (i == 4) ){
+				//Only back detected
+				if( (proxi_values[0] < DETECTION_THRESHOLD)
+				  & (proxi_values[1] < DETECTION_THRESHOLD)
+				  & (proxi_values[6] < DETECTION_THRESHOLD)
+				  & (proxi_values[7] < DETECTION_THRESHOLD) ){
+
+					// Set back LEDs and clear front LEDs
+					wall_detection = 2;
+					set_led(LED1, 0);
+					set_rgb_led(LED2, 0, 0, 0);
+					set_rgb_led(LED8, 0, 0, 0);
+					set_led(LED5, 1);
+					set_rgb_led(LED4, 255, 255, 255);
+					set_rgb_led(LED6, 255, 255, 255);
+				}
+			//Only side detection
+    		}else if( (proxi_values[3] < DETECTION_THRESHOLD)
+				  & (proxi_values[4] < DETECTION_THRESHOLD)
+				  & (proxi_values[0] < DETECTION_THRESHOLD)
+				  & (proxi_values[1] < DETECTION_THRESHOLD)
+				  & (proxi_values[6] < DETECTION_THRESHOLD)
+				  & (proxi_values[7] < DETECTION_THRESHOLD) ){
+					wall_detection = 0;
+					set_rgb_led(LED4, 0, 0, 0);
+					set_rgb_led(LED6, 0, 0, 0);
+					set_led(LED1, 0);
+					set_rgb_led(LED2, 0, 0, 0);
+					set_rgb_led(LED8, 0, 0, 0);
+    		}
     	}
-
     	// Check each 50ms if there is a wall or not
     	chThdSleepMilliseconds(50);
     }

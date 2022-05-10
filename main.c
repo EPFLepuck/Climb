@@ -83,8 +83,12 @@ int main(void)
     }
     /* Infinite loop. */
     while (1) {
-
-    	chThdSleepMilliseconds(1000);
+    	if( ((get_acc_case() == 2) | (get_acc_case() == 4)) & (get_wall_detection() != 2) ){
+    		set_led(LED5, 1);
+    		chThdSleepMilliseconds(300);
+    		set_led(LED5, 0);
+    		chThdSleepMilliseconds(300);
+    	}
     }
 }
 

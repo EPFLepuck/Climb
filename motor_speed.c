@@ -55,7 +55,7 @@ static THD_FUNCTION(MotorSpeed, arg) {
 		//--------------Motors and other things----------------------
 
 		// Check if the motor speed is greater than the limit
-		// straight_speed + correction_speed = MOTOR_SPEED_LIMIT
+		// straight_speed + correction_speed <- MOTOR_SPEED_LIMIT
 		// straight_speed - correction_speed stays the same
 		if(straight_speed+correction_speed > MOTOR_SPEED_LIMIT){
 			correction_speed = (MOTOR_SPEED_LIMIT-straight_speed+correction_speed)/2;
