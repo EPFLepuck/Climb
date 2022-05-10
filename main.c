@@ -57,6 +57,10 @@ int main(void)
 
 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
    messagebus_find_topic_blocking(&bus, "/imu");
 
     // Wait callibration
@@ -68,10 +72,14 @@ int main(void)
 
     /* Infinite loop. */
     while (1) {
+<<<<<<< Updated upstream
     	palTogglePad(GPIOD, GPIOD_LED_FRONT);
     	chprintf((BaseSequentialStream *)&SD3, "Error = %f \n",get_acc_x());
     	chprintf((BaseSequentialStream *)&SD3, "Case = %d \n",get_acc_case());
 
+=======
+    	//test
+>>>>>>> Stashed changes
     	chThdSleepMilliseconds(1000);
     }
 }
