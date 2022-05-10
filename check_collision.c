@@ -77,7 +77,7 @@ static THD_FUNCTION(CheckCollision, arg) {
 					set_rgb_led(LED8, 255, 255, 255);
 
 					//Front wall sound
-					if(get_selector() == 0){
+					if( (get_selector() == 0) | (get_selector() == 15) ){
 						dac_stop();
 					}else{
 						dac_play(1500);
@@ -115,7 +115,7 @@ static THD_FUNCTION(CheckCollision, arg) {
 					set_rgb_led(LED6, 255, 255, 255);
 
 					//Back wall sound
-					if(get_selector() == 0){
+					if( (get_selector() == 0) | (get_selector() == 15) ){
 						dac_stop();
 					}else{
 						dac_play(1000);
