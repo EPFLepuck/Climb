@@ -85,12 +85,6 @@ int main(void)
     }
     /* Infinite loop. */
     while (1) {
-    	//chprintf((BaseSequentialStream *)&SD3, "AccX = %f \n",get_acc_x());
-    	//chprintf((BaseSequentialStream *)&SD3, "Case = %d \n",get_acc_case());
-    	//chprintf((BaseSequentialStream *)&SD3, "IR2 = %d \n",get_calibrated_prox(1));
-    	//chprintf((BaseSequentialStream *)&SD3, "IR1 = %d \n",get_calibrated_prox(0));
-    	//chprintf((BaseSequentialStream *)&SD3, "IR7 = %d \n",get_calibrated_prox(6));
-    	//chprintf((BaseSequentialStream *)&SD3, "IR8 = %d \n",get_calibrated_prox(7));
 
     	chThdSleepMilliseconds(1000);
     }

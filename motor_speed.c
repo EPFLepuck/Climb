@@ -37,7 +37,6 @@ static THD_FUNCTION(MotorSpeed, arg) {
 
     systime_t time;
 
-    //uint8_t  up_down = 0;
     float error = 0;
     float derivative = 0;
     float last_error = 0;

@@ -54,16 +54,16 @@ static THD_FUNCTION(CheckCollision, arg) {
     			//Toggle LED
     			clear_leds();
     			set_led(LED1, 1);
-    			set_rgb_led(LED2, 0, 0, 255);
-    			set_rgb_led(LED8, 0, 0, 255);
+    			set_rgb_led(LED2, 255, 255, 255);
+    			set_rgb_led(LED8, 255, 255, 255);
     		}else if( (i == 3) | (i == 4) ){
     			wall_detection = 2;
 
 				// Toggle LED
 				clear_leds();
 				set_led(LED5, 1);
-				set_rgb_led(LED4, 0, 0, 255);
-				set_rgb_led(LED6, 0, 0, 255);
+				set_rgb_led(LED4, 255, 255, 255);
+				set_rgb_led(LED6, 255, 255, 255);
     		}else{
 				wall_detection = 0;
 				clear_leds();
