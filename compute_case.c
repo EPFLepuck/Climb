@@ -17,7 +17,6 @@
 #define		GRAVITY		9.80665f
 
 static float acc_x = 0;
-static float acc_z = 0;
 static uint8_t 	acc_case = 0;
 
 // Thread that tells us in which case (0, I, II, III, IV) (SPQR) we are
@@ -29,6 +28,7 @@ static THD_FUNCTION(SelectCase, arg) {
 
 
     float acc_y = 0;
+    float acc_z = 0;
 
     while(1){
     	// get x and y component accelerometer
