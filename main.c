@@ -5,10 +5,7 @@
 #include <ch.h>
 #include <hal.h>
 #include <memory_protection.h>
-#include <usbcfg.h>
-#include <chprintf.h>
 #include <motors.h>
-#include <arm_math.h>
 #include <sensors/imu.h>
 #include <sensors/proximity.h>
 #include <leds.h>
@@ -24,8 +21,16 @@
 #include "motor_speed.h"
 
 messagebus_t bus;
-MUTEX_DECL(bus_lock); // @suppress("Field cannot be resolved")
+MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
+
+/*
+ *  Use of the selector :
+ *  Selector 0 		: No sound and no motor
+ *  Selector 1 		: Sound and no motor
+ *  Selector 15 	: No sound and motor
+ *  Other Selector 	: Sound and motor
+ */
 
 static void serial_start(void)
 {
@@ -49,6 +54,9 @@ int main(void)
     /** Inits the Inter Process Communication bus. */
     messagebus_init(&bus, &bus_lock, &bus_condvar);
 
+    // Wait calibration
+    chThdSleepMilliseconds(1000);
+
     // Starts the imu
     imu_start();
     // Inits the motors
@@ -59,45 +67,50 @@ int main(void)
     proximity_start();
     // Starts the SPI for the RGB LED
     spi_comm_start();
-    // Starts the USB communication
-    //usb_start();
     // Audio start
     dac_start();
 
-   messagebus_find_topic_blocking(&bus, "/imu");
-   // Callibration
-   calibrate_acc();
-   calibrate_ir();
 
-    // Wait callibration
-    chThdSleepMilliseconds(2000);
+    messagebus_find_topic_blocking(&bus, "/imu");
 
-    // Start thread
+    // Calibration
+    calibrate_acc();
+    calibrate_ir();
+
+    // Start threads
     check_collision_start();
     select_case_start();
     motor_speed_start();
 
-    // LED indicates that the callibration is completed
+    // Front LED indicates that the calibration is completed
     for(uint8_t i = 0 ; i < 3; ++i){
     	set_front_led(1);
     	chThdSleepMilliseconds(100);
     	set_front_led(0);
     	chThdSleepMilliseconds(100);
     }
+    // Clear the LEDs to be sure that they are correctly initialised
+    clear_leds();
+
     uint8_t check_back_wall = 0;
+
     /* Infinite loop. */
     while (1) {
-    	if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3))
-    	  & (get_wall_detection() == 2) ){
+    	// Blink the back LED when the robot moves backward
+    	if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
+    		 (get_wall_detection() == 2) ){
+
     		check_back_wall = 1;
-    	}else if( ((get_acc_case() == 2) | (get_acc_case() == 4))
-    			& (get_wall_detection() != 2) ){
+    	}else if( ((get_acc_case() == 2) | (get_acc_case() == 4)) &
+    			   (get_wall_detection() != 2) ){
+
     		set_led(LED5, 1);
     		chThdSleepMilliseconds(300);
     		set_led(LED5, 0);
     		chThdSleepMilliseconds(300);
-    	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3))
-    			& (get_wall_detection() != 2) & (check_back_wall == 1) ){
+    	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
+    			   (get_wall_detection() != 2) & (check_back_wall == 1) ){
+
     		set_led(LED5, 0);
     		check_back_wall = 0;
     	}
