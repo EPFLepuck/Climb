@@ -92,18 +92,20 @@ static THD_FUNCTION(CheckCollision, arg) {
     			}else{
     				wall_detection = 2;
 
-    				// Set front LEDs
+    				// Set all LEDs to red
     				set_led(LED1, 1);
-					set_rgb_led(LED2, 255, 255, 255);
-					set_rgb_led(LED8, 255, 255, 255);
-
-					// Set back LEDs
-					set_led(LED5, 1);
-					set_rgb_led(LED4, 255, 255, 255);
-					set_rgb_led(LED6, 255, 255, 255);
+    				set_led(LED5, 1);
+					set_rgb_led(LED2, 255, 0, 0);
+					set_rgb_led(LED4, 255, 0, 0);
+					set_rgb_led(LED6, 255, 0, 0);
+					set_rgb_led(LED8, 255, 0, 0);
 
 					//Stop sound
-					dac_stop();
+					if( (get_selector() == 0) | (get_selector() == 15) ){
+						dac_stop();
+					}else{
+						dac_play(900);
+					}
     			}
 
 			}else if( (i == 3) | (i == 4) ){
@@ -130,8 +132,8 @@ static THD_FUNCTION(CheckCollision, arg) {
 					}
 				}
 			//Only side detection
-    		}else if( (proxi_values[3] < DETECTION_THRESHOLD) & (proxi_values[4] < DETECTION_THRESHOLD) &
-    				  (proxi_values[0] < DETECTION_THRESHOLD) & (proxi_values[1] < DETECTION_THRESHOLD) &
+    		}else if( (proxi_values[0] < DETECTION_THRESHOLD) & (proxi_values[1] < DETECTION_THRESHOLD) &
+    				  (proxi_values[3] < DETECTION_THRESHOLD) & (proxi_values[4] < DETECTION_THRESHOLD) &
 					  (proxi_values[6] < DETECTION_THRESHOLD) & (proxi_values[7] < DETECTION_THRESHOLD) ){
 
 					wall_detection = 0;
