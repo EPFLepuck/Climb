@@ -4,12 +4,9 @@
  *  Created on: 14 avr. 2022
  *      Author: Corentin Jossi
  */
-// Standard includes
 #include <ch.h>
 #include <hal.h>
 #include <sensors/imu.h>
-
-// project files includes
 #include "compute_case.h"
 
 #define		XAXIS		0
@@ -42,23 +39,9 @@ static THD_FUNCTION(SelectCase, arg) {
     	acc_z = get_acceleration(ZAXIS) + GRAVITY;
 
     	// Compute case
-    	if( (acc_case == 0) & ((acc_z > START) | (acc_z < -START)) ){
+    	if( ((acc_case == 0) & ((acc_z > START) | (acc_z < -START))) | (acc_case != 0) ){
     		// Set the start of the program
 
-    		if( acc_x >= 0 ) {
-				if( acc_y >= Y_THERSHOLD ) {
-					acc_case = 1;
-				}else if( acc_y <= -Y_THERSHOLD ) {
-					acc_case = 2;
-				}
-			}else {
-				if( acc_y >= Y_THERSHOLD ) {
-					acc_case = 3;
-				}else if(acc_y <= -Y_THERSHOLD){
-					acc_case = 4;
-				}
-			}
-    	}else if(acc_case != 0){
     		if( acc_x >= 0 ) {
 				if( acc_y >= Y_THERSHOLD ) {
 					acc_case = 1;
@@ -87,4 +70,8 @@ float get_acc_x(void){
 
 uint8_t get_acc_case(void){
 	return acc_case;
+}
+
+void reset_acc_case(void){
+	acc_case = 0;
 }

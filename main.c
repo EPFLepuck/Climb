@@ -14,6 +14,7 @@
 #include <i2c_bus.h>
 #include <audio/audio_thread.h>
 
+
 // project files includes
 #include "main.h"
 #include "compute_case.h"
@@ -97,19 +98,18 @@ int main(void)
     /* Infinite loop. */
     while (1) {
     	// Blink the back LED when the robot moves backward
-    	if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
-    		 (get_wall_detection() == 2) ){
+    	if( get_wall_detection() == 2 ){
 
     		check_back_wall = 1;
     	}else if( ((get_acc_case() == 2) | (get_acc_case() == 4)) &
-    			   (get_wall_detection() != 2) ){
+    			  (get_wall_detection() != 2) ){
 
     		set_led(LED5, 1);
     		chThdSleepMilliseconds(300);
     		set_led(LED5, 0);
     		chThdSleepMilliseconds(300);
     	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
-    			   (get_wall_detection() != 2) & (check_back_wall == 1) ){
+    			  (get_wall_detection() != 2) & (check_back_wall == 1) ){
 
     		set_led(LED5, 0);
     		check_back_wall = 0;

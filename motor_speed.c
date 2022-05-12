@@ -66,7 +66,7 @@ static THD_FUNCTION(MotorSpeed, arg) {
 		}
 
 		// Speed to the motor by cases
-		if( (get_acc_case() == 0) | (get_selector() == 0) | (get_selector() == 1)){
+		if( (get_acc_case() == 0) | (get_selector() == 0) | (get_selector() == 1) ){
 			stop_motor();
 		}else if( (get_acc_case() == 1) | (get_acc_case() == 3) ) {
 			/*

@@ -15,12 +15,14 @@
 
 // project files includes
 #include "check_collision.h"
+#include "compute_case.h"
 
 #define DETECTION_THRESHOLD	100
 /*
  * wall_detection = 0 -> nothing changes
  * wall_detection = 1 -> wall detected in front
  * wall_detection = 2 -> wall detected in the back
+ * wall_detection = 3 -> wall detected in the front and in the back
  */
 static uint8_t wall_detection = 0;
 
@@ -91,6 +93,9 @@ static THD_FUNCTION(CheckCollision, arg) {
 				// Front and back detected
     			}else{
     				wall_detection = 2;
+
+    				// Set acc_case to 0
+    				reset_acc_case();
 
     				// Set all LEDs to red
     				set_led(LED1, 1);
