@@ -107,13 +107,15 @@ int main(void)
     		set_led(LED5, 1);
     		chThdSleepMilliseconds(300);
     		set_led(LED5, 0);
-    		chThdSleepMilliseconds(300);
+    		chThdSleepMilliseconds(200);
     	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
     			  (get_wall_detection() != 2) & (check_back_wall == 1) ){
 
     		set_led(LED5, 0);
     		check_back_wall = 0;
     	}
+    // 10Hz
+    chThdSleepMilliseconds(100);
     }
 }
 

@@ -36,8 +36,6 @@ static THD_FUNCTION(MotorSpeed, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-    systime_t time;
-
     float error = 0;
     float derivative = 0;
     float last_error = 0;
@@ -46,7 +44,6 @@ static THD_FUNCTION(MotorSpeed, arg) {
 	float sum_error = 0;
 
     while(1){
-		time = chVTGetSystemTime();
 
 		//----------PID regulator----------
 
@@ -92,8 +89,8 @@ static THD_FUNCTION(MotorSpeed, arg) {
 			}
 		}
 
-		//25Hz
-		chThdSleepUntilWindowed(time, time + MS2ST(40));
+		// 25Hz
+		chThdSleepMilliseconds(40);
 	}
 }
 

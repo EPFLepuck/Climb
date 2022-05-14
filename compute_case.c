@@ -56,6 +56,8 @@ static THD_FUNCTION(SelectCase, arg) {
 				}
 			}
     	}
+    	// 50Hz
+    	chThdSleepMilliseconds(20);
     }
 }
 
