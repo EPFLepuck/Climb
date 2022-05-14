@@ -24,6 +24,7 @@
  * wall_detection = 2 -> wall detected in the back or (front and back)
  */
 static uint8_t wall_detection = 0;
+static uint8_t check_back_wall = 0;
 
 // Declaration of functions
 void clear_led_but_back(void);
@@ -51,12 +52,12 @@ static THD_FUNCTION(CheckCollision, arg) {
     			if(check_sensors == 7){
     				wall_detection = 0;
     				/*
-    				 *  We do not want to change the state of the back LED
+    				 *  We do not want to change the state of the back LED (LED5)
     				 *  That is why we do not use clear_leds()
     				 */
     				clear_led_but_back();
 
-    				//Stop sound
+    				// Stop sound
     				dac_stop();
 
     				check_sensors = 0;
@@ -82,7 +83,7 @@ static THD_FUNCTION(CheckCollision, arg) {
 					set_rgb_led(LED2, 255, 255, 255);
 					set_rgb_led(LED8, 255, 255, 255);
 
-					//Front wall sound
+					// Front wall sound
 					if( (get_selector() == 0) | (get_selector() == 15) ){
 						dac_stop();
 					}else{
@@ -92,6 +93,7 @@ static THD_FUNCTION(CheckCollision, arg) {
 				// Front and back detected
     			}else{
     				wall_detection = 2;
+    				check_back_wall = 1;
 
     				// Set acc_case to 0
     				reset_acc_case();
@@ -104,7 +106,7 @@ static THD_FUNCTION(CheckCollision, arg) {
 					set_rgb_led(LED6, 255, 0, 0);
 					set_rgb_led(LED8, 255, 0, 0);
 
-					//Stop sound
+					// Stop sound
 					if( (get_selector() == 0) | (get_selector() == 15) ){
 						dac_stop();
 					}else{
@@ -113,12 +115,13 @@ static THD_FUNCTION(CheckCollision, arg) {
     			}
 
 			}else if( (i == 3) | (i == 4) ){
-				//Only back detected
+				// Only back detected
 				if( (proxi_values[0] < DETECTION_THRESHOLD) & (proxi_values[1] < DETECTION_THRESHOLD) &
 					(proxi_values[6] < DETECTION_THRESHOLD) & (proxi_values[7] < DETECTION_THRESHOLD) ){
 
 					// Set back LEDs and clear front LEDs
 					wall_detection = 2;
+					check_back_wall = 1;
 
 					set_led(LED1, 0);
 					set_rgb_led(LED2, 0, 0, 0);
@@ -128,14 +131,14 @@ static THD_FUNCTION(CheckCollision, arg) {
 					set_rgb_led(LED4, 255, 255, 255);
 					set_rgb_led(LED6, 255, 255, 255);
 
-					//Back wall sound
+					// Back wall sound
 					if( (get_selector() == 0) | (get_selector() == 15) ){
 						dac_stop();
 					}else{
 						dac_play(300);
 					}
 				}
-			//Only side detection
+			// Only side detection
     		}else if( (proxi_values[0] < DETECTION_THRESHOLD) & (proxi_values[1] < DETECTION_THRESHOLD) &
     				  (proxi_values[3] < DETECTION_THRESHOLD) & (proxi_values[4] < DETECTION_THRESHOLD) &
 					  (proxi_values[6] < DETECTION_THRESHOLD) & (proxi_values[7] < DETECTION_THRESHOLD) ){
@@ -144,7 +147,7 @@ static THD_FUNCTION(CheckCollision, arg) {
 
 					clear_led_but_back();
 
-					//Stop sound
+					// Stop sound
 					dac_stop();
     		}
     	}
@@ -160,6 +163,14 @@ void check_collision_start(void){
 
 uint8_t get_wall_detection(void){
 	return wall_detection;
+}
+
+uint8_t get_check_back_wall(void){
+	return check_back_wall;
+}
+
+void clear_check_back_wall(void){
+	check_back_wall = 0;
 }
 
 // Clear all LEDs except the back LED

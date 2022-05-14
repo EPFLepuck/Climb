@@ -93,8 +93,6 @@ int main(void)
     // Clear the LEDs to be sure that they are correctly initialised
     clear_leds();
 
-    uint8_t check_back_wall = 0;
-
     /* Infinite loop. */
     while (1) {
     	// Blink the back LED when the robot moves backward
@@ -102,17 +100,14 @@ int main(void)
     			  (get_wall_detection() != 2) ){
 
     		set_led(LED5, 1);
+    		chThdSleepMilliseconds(300);
+    		set_led(LED5, 0);
     		chThdSleepMilliseconds(200);
-    		set_led(LED5, 0);
-    		chThdSleepMilliseconds(100);
-
-    	}else if( get_wall_detection() == 2 ){
-        	check_back_wall = 1;
     	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
-    			  (get_wall_detection() != 2) & (check_back_wall == 1) ){
+    			  (get_wall_detection() != 2) & (get_check_back_wall() == 1) ){
 
     		set_led(LED5, 0);
-    		check_back_wall = 0;
+    		clear_check_back_wall();
     	}
     // 10Hz
     chThdSleepMilliseconds(100);
