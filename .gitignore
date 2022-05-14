@@ -1,2 +1,5 @@
 .dep
+.settings
 build
+libssp.a
+libssp_nonshared.a
