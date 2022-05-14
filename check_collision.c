@@ -21,8 +21,7 @@
 /*
  * wall_detection = 0 -> nothing changes
  * wall_detection = 1 -> wall detected in front
- * wall_detection = 2 -> wall detected in the back
- * wall_detection = 3 -> wall detected in the front and in the back
+ * wall_detection = 2 -> wall detected in the back or (front and back)
  */
 static uint8_t wall_detection = 0;
 
