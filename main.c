@@ -98,16 +98,16 @@ int main(void)
     /* Infinite loop. */
     while (1) {
     	// Blink the back LED when the robot moves backward
-    	if( get_wall_detection() == 2 ){
-
-    		check_back_wall = 1;
-    	}else if( ((get_acc_case() == 2) | (get_acc_case() == 4)) &
+    	if( ((get_acc_case() == 2) | (get_acc_case() == 4)) &
     			  (get_wall_detection() != 2) ){
 
     		set_led(LED5, 1);
     		chThdSleepMilliseconds(200);
     		set_led(LED5, 0);
     		chThdSleepMilliseconds(100);
+
+    	}else if( get_wall_detection() == 2 ){
+        	check_back_wall = 1;
     	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
     			  (get_wall_detection() != 2) & (check_back_wall == 1) ){
 
