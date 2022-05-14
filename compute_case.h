@@ -17,4 +17,7 @@ uint8_t get_acc_case(void);
 // Get acceleration of the X axis
 float get_acc_x(void);
 
+// Reset to 0 acc_case
+void reset_acc_case(void);
+
 #endif /* COMPUTE_CASE_H_ */
