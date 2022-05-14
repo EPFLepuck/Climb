@@ -105,9 +105,9 @@ int main(void)
     			  (get_wall_detection() != 2) ){
 
     		set_led(LED5, 1);
-    		chThdSleepMilliseconds(300);
-    		set_led(LED5, 0);
     		chThdSleepMilliseconds(200);
+    		set_led(LED5, 0);
+    		chThdSleepMilliseconds(100);
     	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
     			  (get_wall_detection() != 2) & (check_back_wall == 1) ){
 
