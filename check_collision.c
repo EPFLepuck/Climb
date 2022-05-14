@@ -13,7 +13,7 @@
 #include <selector.h>
 #include <audio/audio_thread.h>
 
-// project files includes
+// Project files includes
 #include "check_collision.h"
 #include "compute_case.h"
 

@@ -9,7 +9,7 @@
 #include <hal.h>
 #include <sensors/imu.h>
 
-// project files includes
+// Project files includes
 #include "compute_case.h"
 
 #define		XAXIS		0

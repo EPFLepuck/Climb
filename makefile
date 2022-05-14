@@ -13,6 +13,7 @@ CSRC += ./main.c \
 		./compute_case.c \
 		./motor_speed.c \
 		./check_collision.c \
+		./blinky.c \
 
 #Header folders to include
 INCDIR += 

@@ -1,3 +1,9 @@
+/*
+ * main.c
+ *
+ *  Created on: 14 avr. 2022
+ *      Author: Corentin Jossi
+ */
 // Standard includes
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,11 +21,12 @@
 #include <audio/audio_thread.h>
 
 
-// project files includes
+// Project files includes
 #include "main.h"
 #include "compute_case.h"
 #include "check_collision.h"
 #include "motor_speed.h"
+#include "blinky.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -82,6 +89,7 @@ int main(void)
     check_collision_start();
     select_case_start();
     motor_speed_start();
+    blinky_start();
 
     // Front LED indicates that the calibration is completed
     for(uint8_t i = 0 ; i < 3; ++i){
@@ -95,22 +103,7 @@ int main(void)
 
     /* Infinite loop. */
     while (1) {
-    	// Blink the back LED when the robot moves backward
-    	if( ((get_acc_case() == 2) | (get_acc_case() == 4)) &
-    			  (get_wall_detection() != 2) ){
-
-    		set_led(LED5, 1);
-    		chThdSleepMilliseconds(300);
-    		set_led(LED5, 0);
-    		chThdSleepMilliseconds(200);
-    	}else if( ((get_acc_case() == 0) | (get_acc_case() == 1) | (get_acc_case() == 3)) &
-    			  (get_wall_detection() != 2) & (get_check_back_wall() == 1) ){
-
-    		set_led(LED5, 0);
-    		clear_check_back_wall();
-    	}
-    // 10Hz
-    chThdSleepMilliseconds(100);
+    	chThdSleepMilliseconds(1000);
     }
 }
 

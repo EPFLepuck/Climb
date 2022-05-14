@@ -1,3 +1,9 @@
+/*
+ * main.h
+ *
+ *  Created on: 14 avr. 2022
+ *      Author: Corentin Jossi
+ */
 #ifndef MAIN_H
 #define MAIN_H
 

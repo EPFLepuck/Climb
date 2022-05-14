@@ -11,7 +11,7 @@
 #include <motors.h>
 #include <selector.h>
 
-// project files includes
+// Project files includes
 #include "motor_speed.h"
 #include "compute_case.h"
 #include "check_collision.h"
