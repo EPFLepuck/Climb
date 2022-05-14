@@ -4,9 +4,12 @@
  *  Created on: 14 avr. 2022
  *      Author: Corentin Jossi
  */
+// Standard includes
 #include <ch.h>
 #include <hal.h>
 #include <sensors/imu.h>
+
+// project files includes
 #include "compute_case.h"
 
 #define		XAXIS		0
