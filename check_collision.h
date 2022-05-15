@@ -13,7 +13,5 @@ void check_collision_start(void);
 
 // Getter of wall_detection
 uint8_t get_wall_detection(void);
-uint8_t get_check_back_wall(void);
-void clear_check_back_wall(void);
 
 #endif /* CHECK_COLLISION_H_ */

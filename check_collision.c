@@ -24,7 +24,6 @@
  * wall_detection = 2 -> wall detected in the back or (front and back)
  */
 static uint8_t wall_detection = 0;
-static uint8_t check_back_wall = 0;
 
 // Declaration of functions
 void clear_led_but_back(void);
@@ -93,7 +92,6 @@ static THD_FUNCTION(CheckCollision, arg) {
 				// Front and back detected
     			}else{
     				wall_detection = 2;
-    				check_back_wall = 1;
 
     				// Set acc_case to 0
     				reset_acc_case();
@@ -121,7 +119,6 @@ static THD_FUNCTION(CheckCollision, arg) {
 
 					// Set back LEDs and clear front LEDs
 					wall_detection = 2;
-					check_back_wall = 1;
 
 					set_led(LED1, 0);
 					set_rgb_led(LED2, 0, 0, 0);
@@ -163,14 +160,6 @@ void check_collision_start(void){
 
 uint8_t get_wall_detection(void){
 	return wall_detection;
-}
-
-uint8_t get_check_back_wall(void){
-	return check_back_wall;
-}
-
-void clear_check_back_wall(void){
-	check_back_wall = 0;
 }
 
 // Clear all LEDs except the back LED
